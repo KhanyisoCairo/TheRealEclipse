@@ -7,7 +7,7 @@ slot text,
 booked boolean,
 booked_by text
 );
-
+git
 insert into booking (department, license_code, slot, booked, license_type)
     values ('athlone',  'c1', 'Monday 12h00 - 13h00', false, 'drivers');
 

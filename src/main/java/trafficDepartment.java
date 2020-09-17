@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,12 +93,25 @@ public class trafficDepartment {
             post("/book", (req, res) -> {
                 String bookingId = req.queryParams("bookingId");
 
-                jdbi.useHandle(h -> {
+                Booking theBooking = jdbi.withHandle(h -> {
                     h.execute("update booking set booked = true where id = ?", Integer.parseInt(bookingId));
+
+                    Booking booking = h.createQuery(
+                            "select * from booking where id = ? ")
+                            .bind(0, Integer.parseInt(bookingId))
+                            .mapToBean(Booking.class)
+                            .findOnly();
+
+                    return booking;
+
                 });
 
-                return "Thanks for booking";
-            });
+                Map<String, Object> dataMap = new HashMap<>();
+                dataMap.put("booking", theBooking);
+
+                return new ModelAndView(dataMap, "thankyou.handlebars");
+
+            }, new HandlebarsTemplateEngine());
 
             post("/booking", (req, res) -> {
 
@@ -106,11 +120,24 @@ public class trafficDepartment {
                 String location = req.queryParams("location");
                 String codeType = req.queryParams("code");
 
-                System.out.println(licenceType);
-                System.out.println(location);
-                System.out.println(codeType);
-
                 List<Booking> bookings = jdbi.withHandle( h -> {
+
+                    if (licenceType == null) {
+                        return new ArrayList<>();
+                    }
+
+                    if (!licenceType.equals("")
+                            && codeType.equals("")
+                            && location.equals("")) {
+                        return h.createQuery(
+                                "select * from booking where booked = false "  +
+                                        " and license_type = ?")
+                                .bind(0, licenceType)
+                                .mapToBean(Booking.class)
+                                .list();
+                    }
+
+
                     List<Booking> bookingList = h.createQuery(
                             "select * from booking where booked = false and department = ? " +
                                     "and license_code = ? and license_type = ?")
