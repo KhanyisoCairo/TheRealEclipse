@@ -6,7 +6,8 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
 </head>
 
@@ -21,69 +22,109 @@
 <div class="container">
     <div class="row">
         <div class="col-sm">
-          <h2>Make Booking</h2>
+            <h2>Make Booking</h2>
         </div>
     </div>
-    <div class="col-3">
-         <h4> Licence Type</h4>
+    <div class="col-6">
+        <h4> Licence Type</h4>
 
-        <form class="col-3">
+        <form action="/booking" method="post">
+
+            <div class="form-group mb-2">
+                <input class="form-check-input" type="radio" name="licenceType" id="Radios2" value="learners"> Learners
+                Licence
+            </div>
+            <div class="form-group mb-2">
+                <input class="form-check-input" type="radio" name="licenceType" id="Radios2" value="drivers"> Drivers
+                Licence
+            </div>
+
+
+            <div class="form-group dropdown">
+
+                <select class="form-control" name="location">
+                    <option value=""> Choose Traffic Department</option>
+                    <option value="greenpoint">Greenpoint Traffic Department</option>
+                    <option value="athlone">Athlone Traffic Department</option>
+                    <option value="belville">Belville Traffic Department</option>
+                    <option value="stockroad">Stock Road Traffic Department</option>
+                    <option value="elsies">Elsies River Department</option>
+                    <option value="goodwood">Goodwood Department</option>
+                </select>
+            </div>
+
             <div class="form-group">
-                <input class="form-check-input" type="radio" name="Licencetype" id="Radios1" value="Leaners" Learnes Licence>
-                <label class="form-check-label" for=" Radios1" >
-               <h6>Learners Licence</h6>
-                </label>
-                <input class="form-check-input" type="radio" name="Licencetype" id="Radios2" value="Drivers" Drivers Licence>
-                <label class="form-check-label" for="Radios2" >
-                Drivers Licence
-                </label>
-            </div>
-        </form>
-        <br>
-        <form class="row">
-            <div class="col-12">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Licence type
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="button" >Code A1</button>
-                        <button class="dropdown-item" type="button">Code B</button>
-                        <button class="dropdown-item" type="button">Code C1</button>
-                    </div>
-                </div>
+                <select class="form-control" name="code">
+                    <option value="">Choose Code</option>
+                    <option value="c1" name="code">Code 1 - motorcycles</option>
+                    <option value="c2" name="code">Code 2 - Light motor vehicle</option>
+                    <option value="c8" name="code">Code 8 - Heavy motor vehicle</option>
+                </select>
             </div>
 
-        </form>
-<br>
-<form class="row">
-        <div class="col-12">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Traffic Departments
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <button class="dropdown-item" type="button">Ashton Traffic department</button>
-                    <button class="dropdown-item" type="button">Atlantis Traffic department</button>
-                    <button class="dropdown-item" type="button">Beaufort West Municipal Traffic department</button>
-                    <button class="dropdown-item" type="button">Bellrail(Bellville) Traffic department</button>
-                    <button class="dropdown-item" type="button">Brackenfell Traffic department</button>
-                    <button class="dropdown-item" type="button">Bitou Municipal Traffic department</button>
-                    <button class="dropdown-item" type="button">Cape Agulhas Municipal Traffic department</button>
-                    <button class="dropdown-item" type="button">Drakenstein Municipal Traffic department</button>
-                </div>
+            <div>
+
             </div>
-        </div>
-</form>
-            <br>
+
             <div class="btn-group">
-                <button type="button" class="btn btn-secondary">Search</button>
+                <button type="submit" class="btn btn-secondary" value="Book">Search</button>
             </div>
+        </form>
+
+
+        <div>
+
+            {{#if bookings }}
+
+                <h3>Slots available</h3>
+
+                <table class="table">
+                    <tr>
+                        <th>Type</th>
+                        <th>Department</th>
+                        <th>Slot</th>
+                        <th></th>
+                    </tr>
+                    {{#each bookings }}
+                        <tr>
+                            <td>{{licenseType}}</td>
+                            <td>{{department}}</td>
+                            <td>{{slot}}</td>
+                            <td>
+                                <form action="/book" method="post">
+                                    <input type="hidden" name="bookingId" value="{{id}}">
+                                    <input type="submit" value="Book" class="btn btn-sm btn-info">
+                                </form>
+                            </td>
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <td colspan="4">
+                                No slots available
+                            </td>
+                        </tr>
+                    {{/each}}
+                </table>
+            {{else}}
+
+            {{/if}}
+
+
+
 
         </div>
+
+
+    </div>
 </div>
 <!-- JS, Popper.js, and jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script><link
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
 </body>

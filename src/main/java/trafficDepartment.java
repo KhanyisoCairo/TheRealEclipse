@@ -1,3 +1,4 @@
+import org.jdbi.v3.core.Jdbi;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
@@ -6,6 +7,7 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +25,11 @@ public class trafficDepartment {
     }
 
 
-    static Connection getDatabaseConnection(String defualtJdbcUrl) throws URISyntaxException, SQLException {
+    static Jdbi getDatabaseConnection(String defualtJdbcUrl) throws URISyntaxException, SQLException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         String database_url = processBuilder.environment().get("DATABASE_URL");
-        if (database_url != null) {
+        String local = processBuilder.environment().get("LOCAL");
+        if (local == null && database_url != null) {
 
             URI uri = new URI(database_url);
             String[] hostParts = uri.getUserInfo().split(":");
@@ -39,26 +42,35 @@ public class trafficDepartment {
             String path = uri.getPath();
             String url = String.format("jdbc:postgresql://%s:%s%s", host, port, path);
 
-            return DriverManager.getConnection(url, username, password);
+            return Jdbi.create(url, username, password);
 
+        } else if (local != null && database_url != null) {
+            return Jdbi.create(database_url);
         }
 
-        return DriverManager.getConnection(defualtJdbcUrl);
+        return Jdbi.create(defualtJdbcUrl);
 
     }
+
     public static void main(String[] args) {
 
         try {
-           // Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter");
-            Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter?user=khanyiso&password=cairo123");
 
-          staticFiles.location("/public"); // Static files
+           // Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter");
+            Jdbi jdbi = getDatabaseConnection("jdbc:postgresql://localhost/trafficDepartment?user=khanyiso&password=cairo123");
+            
+            staticFiles.location("/public"); // Static files
 
             port(getHerokuAssignedPort());
+            get("/", (request, response) -> {
 
+                response.redirect("/booking");
+
+                return "";
+            });
             get("/booking", (req, res) -> {
 
-               Map<String, String> dataMap = new HashMap<>();
+                Map<String, String> dataMap = new HashMap<>();
 
                 return new ModelAndView(dataMap, "booking.handlebars");
             }, new HandlebarsTemplateEngine());
@@ -78,34 +90,77 @@ public class trafficDepartment {
             }, new HandlebarsTemplateEngine());
 
 
+            post("/book", (req, res) -> {
+                String bookingId = req.queryParams("bookingId");
+
+                Booking theBooking = jdbi.withHandle(h -> {
+                    h.execute("update booking set booked = true where id = ?", Integer.parseInt(bookingId));
+
+                    Booking booking = h.createQuery(
+                            "select * from booking where id = ? ")
+                            .bind(0, Integer.parseInt(bookingId))
+                            .mapToBean(Booking.class)
+                            .findOnly();
+
+                    return booking;
+
+                });
+
+                Map<String, Object> dataMap = new HashMap<>();
+                dataMap.put("booking", theBooking);
+
+                return new ModelAndView(dataMap, "thankyou.handlebars");
+
+            }, new HandlebarsTemplateEngine());
+
             post("/booking", (req, res) -> {
 
                 // get form data values
-                String learnersLicence = req.queryParams("LearnersLicence");
-                String driversLicence = req.queryParams("DriversLicence");
-                String codeType = req.queryParams("CodeType");
-           //     String codeA1 = req.queryParams("Code");
-//                String codeB = req.queryParams("CodeB");
-//                String codeC1 = req.queryParams("CodeC1");
-                String location =req.queryParams("Location");
-                Map<String, String> dataMap = new HashMap<>();
+                String licenceType = req.queryParams("licenceType");
+                String location = req.queryParams("location");
+                String codeType = req.queryParams("code");
 
-                if (learnersLicence == null) {
-                    dataMap.put("error", "Please select a type!");
-                } else if  (driversLicence == null) {
-                    dataMap.put("error", "please select a type!");
-                } else if ( codeType == null){
-                    dataMap.put("error", "Please select a Code type!");
-             }else if (location == null){
-                    dataMap.put("error", "Please select a Location!");
-                }else {
-                    dataMap.put("error", "There is nothing selected!");
+                List<Booking> bookings = jdbi.withHandle( h -> {
 
-                }
+                    if (licenceType == null) {
+                        return new ArrayList<>();
+                    }
+
+                    if (!licenceType.equals("")
+                            && codeType.equals("")
+                            && location.equals("")) {
+                        return h.createQuery(
+                                "select * from booking where booked = false "  +
+                                        " and license_type = ?")
+                                .bind(0, licenceType)
+                                .mapToBean(Booking.class)
+                                .list();
+                    }
+
+
+                    List<Booking> bookingList = h.createQuery(
+                            "select * from booking where booked = false and department = ? " +
+                                    "and license_code = ? and license_type = ?")
+                            .bind(0, location)
+                            .bind(1, codeType)
+                            .bind(2, licenceType)
+                            .mapToBean(Booking.class)
+                            .list();
+
+                    return bookingList;
+
+                });
+
+                Map<String, Object> dataMap = new HashMap<>();
+
+                dataMap.put("bookings", bookings);
+
 
                 return new ModelAndView(dataMap, "booking.handlebars");
 
             }, new HandlebarsTemplateEngine());
+
+
             post("/availableSlots", (req, res) -> {
 
                 // get form data values
@@ -116,11 +171,12 @@ public class trafficDepartment {
                 if (date == null) {
                     dataMap.put("error", "please select a Date!");
                 } else {
-                    dataMap.put("error","There is no date selected");
+                    dataMap.put("error", "There is no date selected");
                 }
                 return new ModelAndView(dataMap, "availableSlots.handlebars");
 
             }, new HandlebarsTemplateEngine());
+
 
             post("/registration", (req, res) -> {
 
@@ -128,26 +184,26 @@ public class trafficDepartment {
                 String firstName = req.queryParams("FirstName");
                 String lastName = req.queryParams("LastName");
                 String identityNumber = req.queryParams("ID");
-                String cellphoneNumber =req.queryParams("CellPhone");
-                String address =req.queryParams("address");
+                String cellphoneNumber = req.queryParams("CellPhone");
+                String address = req.queryParams("address");
                 String email = req.queryParams("email");
 
                 Map<String, String> dataMap = new HashMap<>();
 
                 if (firstName == null) {
                     dataMap.put("error", "There is no Name entered!!");
-                } else if(lastName == null) {
-                    dataMap.put("error","There is no Name entered!");
-                } else if (identityNumber == null){
-                    dataMap.put("error","There is no ID entered!");
-                } else if(cellphoneNumber == null){
-                    dataMap.put("error","There is no Cellphone Number entered!");
-                }else if(address == null){
-                    dataMap.put("error","There is no Address entered!");
-                }else if (email == null){
-                    dataMap.put("error","There is no Email Address entered!");
-                }else {
-                    dataMap.put("error","There is Nothing entered!");
+                } else if (lastName == null) {
+                    dataMap.put("error", "There is no Name entered!");
+                } else if (identityNumber == null) {
+                    dataMap.put("error", "There is no ID entered!");
+                } else if (cellphoneNumber == null) {
+                    dataMap.put("error", "There is no Cellphone Number entered!");
+                } else if (address == null) {
+                    dataMap.put("error", "There is no Address entered!");
+                } else if (email == null) {
+                    dataMap.put("error", "There is no Email Address entered!");
+                } else {
+                    dataMap.put("error", "There is Nothing entered!");
                 }
                 return new ModelAndView(dataMap, "registration.handlebars");
 
