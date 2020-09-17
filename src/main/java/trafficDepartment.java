@@ -46,24 +46,25 @@ public class trafficDepartment {
         return DriverManager.getConnection(defualtJdbcUrl);
 
     }
+
     public static void main(String[] args) {
 
         try {
-           // Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter");
-            Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter?user=khanyiso&password=cairo123");
+            // Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter");
+//            Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter?user=khanyiso&password=cairo123");
 
-          staticFiles.location("/public"); // Static files
+            staticFiles.location("/public"); // Static files
 
             port(getHerokuAssignedPort());
-        get("/", (request, response) -> {
+            get("/", (request, response) -> {
 
-            response.redirect("/booking");
+                response.redirect("/booking");
 
-            return "";
-        });
+                return "";
+            });
             get("/booking", (req, res) -> {
 
-               Map<String, String> dataMap = new HashMap<>();
+                Map<String, String> dataMap = new HashMap<>();
 
                 return new ModelAndView(dataMap, "booking.handlebars");
             }, new HandlebarsTemplateEngine());
@@ -86,24 +87,29 @@ public class trafficDepartment {
             post("/booking", (req, res) -> {
 
                 // get form data values
-                String learnersLicence = req.queryParams("LearnersLicence");
-                String driversLicence = req.queryParams("DriversLicence");
-                String codeType = req.queryParams("CodeType");
-           //     String codeA1 = req.queryParams("Code");
+                String licenceType = req.queryParams("licenceType");
+                String location = req.queryParams("location");
+                String codeType = req.queryParams("code");
+
+                System.out.println(licenceType);
+                System.out.println(location);
+                System.out.println(codeType);
+
+                //     String codeA1 = req.queryParams("Code");
 //                String codeB = req.queryParams("CodeB");
 //                String codeC1 = req.queryParams("CodeC1");
-                String location =req.queryParams("Location");
+//                String location =req.queryParams("Location");
                 Map<String, String> dataMap = new HashMap<>();
 
-                if (learnersLicence == null) {
+                if (licenceType == null) {
                     dataMap.put("error", "Please select a type!");
-                } else if  (driversLicence == null) {
-                    dataMap.put("error", "please select a type!");
-                } else if ( codeType == null){
+                } else if (location == null) {
+                    dataMap.put("error", "please select a location!");
+                } else if (codeType == null) {
                     dataMap.put("error", "Please select a Code type!");
-             }else if (location == null){
+                } else if (location == null) {
                     dataMap.put("error", "Please select a Location!");
-                }else {
+                } else {
                     dataMap.put("error", "There is nothing selected!");
 
                 }
@@ -111,6 +117,8 @@ public class trafficDepartment {
                 return new ModelAndView(dataMap, "booking.handlebars");
 
             }, new HandlebarsTemplateEngine());
+
+
             post("/availableSlots", (req, res) -> {
 
                 // get form data values
@@ -121,11 +129,12 @@ public class trafficDepartment {
                 if (date == null) {
                     dataMap.put("error", "please select a Date!");
                 } else {
-                    dataMap.put("error","There is no date selected");
+                    dataMap.put("error", "There is no date selected");
                 }
                 return new ModelAndView(dataMap, "availableSlots.handlebars");
 
             }, new HandlebarsTemplateEngine());
+
 
             post("/registration", (req, res) -> {
 
@@ -133,26 +142,26 @@ public class trafficDepartment {
                 String firstName = req.queryParams("FirstName");
                 String lastName = req.queryParams("LastName");
                 String identityNumber = req.queryParams("ID");
-                String cellphoneNumber =req.queryParams("CellPhone");
-                String address =req.queryParams("address");
+                String cellphoneNumber = req.queryParams("CellPhone");
+                String address = req.queryParams("address");
                 String email = req.queryParams("email");
 
                 Map<String, String> dataMap = new HashMap<>();
 
                 if (firstName == null) {
                     dataMap.put("error", "There is no Name entered!!");
-                } else if(lastName == null) {
-                    dataMap.put("error","There is no Name entered!");
-                } else if (identityNumber == null){
-                    dataMap.put("error","There is no ID entered!");
-                } else if(cellphoneNumber == null){
-                    dataMap.put("error","There is no Cellphone Number entered!");
-                }else if(address == null){
-                    dataMap.put("error","There is no Address entered!");
-                }else if (email == null){
-                    dataMap.put("error","There is no Email Address entered!");
-                }else {
-                    dataMap.put("error","There is Nothing entered!");
+                } else if (lastName == null) {
+                    dataMap.put("error", "There is no Name entered!");
+                } else if (identityNumber == null) {
+                    dataMap.put("error", "There is no ID entered!");
+                } else if (cellphoneNumber == null) {
+                    dataMap.put("error", "There is no Cellphone Number entered!");
+                } else if (address == null) {
+                    dataMap.put("error", "There is no Address entered!");
+                } else if (email == null) {
+                    dataMap.put("error", "There is no Email Address entered!");
+                } else {
+                    dataMap.put("error", "There is Nothing entered!");
                 }
                 return new ModelAndView(dataMap, "registration.handlebars");
 
