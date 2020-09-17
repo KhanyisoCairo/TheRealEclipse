@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Traffic Register Application</title>
+</head>
+<body>
+<center>
+    <div>
+        <h1>Make Bookings</h1>
+    </div>
+    <form action ="/search" method="post">
+        <div>
+            <select name= "location">
+             <option> Choose Traffic Department</option>
+            <option value="greenpoint" >Greenpoint Traffic Department</option>
+            <option value="athlone" >Athlone Traffic Department</option>
+            <option value="belville" >Belville Traffic Department</option>
+            <option value="stockroad">Stock Road Traffic Department</option>
+            <option value="elsies" >Elsies River Department</option>
+            <option value="goodwood" >Goodwood Department</option>
+        </select>
+        </div>
+        <br>
+    <div>
+        <div>
+            <div>
+                <input type="radio" name="bookingtype" value="learners">Learner License
+            </div>
+            <div>
+                <input type="radio" name="bookingtype" value="license">Driver License
+            </div>
+        </div>
+    </div>
+    <br>
+        <div>
+        <select name="code">
+            <option>Choose Code</option>
+            <option value = "c1" name= "code">Code 1 - motorcycles</option>
+            <option value = "c2"  name= "code">Code 2 - Light motor vehicle</option>
+            <option value = "c3"  name= "code">Code 8 - Heavy motor vehicle</option>
+        </select>
+        </div>
+        <br>
+        <div>
+        <input type="submit" value="Search">
+        </div>
+    </form>
+    </div>
+</center>
+</body>
+</html>
