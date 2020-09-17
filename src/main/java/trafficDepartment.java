@@ -51,59 +51,107 @@ public class trafficDepartment {
         try {
            // Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter");
             Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter?user=khanyiso&password=cairo123");
-//            trafficDepartment greeter = new GreeterJDBC(connection);
-//            Api api = new Api(greeter);
 
-         //   staticFiles.location("/public"); // Static files
+          staticFiles.location("/public"); // Static files
 
             port(getHerokuAssignedPort());
 
-   //         get("/", (req, res) -> {
-//
-    //           Map<String, String> dataMap = new HashMap<>();
-        //      dataMap.put("registration", trafficDepartment.getDatabaseConnection(String));
-//
-//                return new ModelAndView(dataMap, "index.hbs");
-//            }, new HandlebarsTemplateEngine());
+            get("/booking", (req, res) -> {
+
+               Map<String, String> dataMap = new HashMap<>();
+
+                return new ModelAndView(dataMap, "booking.handlebars");
+            }, new HandlebarsTemplateEngine());
+
+            get("/availableSlots", (req, res) -> {
+
+                Map<String, String> dataMap = new HashMap<>();
+
+                return new ModelAndView(dataMap, "availableSlots.handlebars");
+            }, new HandlebarsTemplateEngine());
+
+            get("/registration", (req, res) -> {
+
+                Map<String, String> dataMap = new HashMap<>();
+
+                return new ModelAndView(dataMap, "registration.handlebars");
+            }, new HandlebarsTemplateEngine());
+
+
+            post("/booking", (req, res) -> {
+
+                // get form data values
+                String learnersLicence = req.queryParams("LearnersLicence");
+                String driversLicence = req.queryParams("DriversLicence");
+                String codeType = req.queryParams("CodeType");
+           //     String codeA1 = req.queryParams("Code");
+//                String codeB = req.queryParams("CodeB");
+//                String codeC1 = req.queryParams("CodeC1");
+                String location =req.queryParams("Location");
+                Map<String, String> dataMap = new HashMap<>();
+
+                if (learnersLicence == null) {
+                    dataMap.put("error", "Please select a type!");
+                } else if  (driversLicence == null) {
+                    dataMap.put("error", "please select a type!");
+                } else if ( codeType == null){
+                    dataMap.put("error", "Please select a Code type!");
+             }else if (location == null){
+                    dataMap.put("error", "Please select a Location!");
+                }else {
+                    dataMap.put("error", "There is nothing selected!");
+
+                }
+
+                return new ModelAndView(dataMap, "booking.handlebars");
+
+            }, new HandlebarsTemplateEngine());
+            post("/availableSlots", (req, res) -> {
+
+                // get form data values
+                String date = req.queryParams("date");
+
+                Map<String, String> dataMap = new HashMap<>();
+
+                if (date == null) {
+                    dataMap.put("error", "please select a Date!");
+                } else {
+                    dataMap.put("error","There is no date selected");
+                }
+                return new ModelAndView(dataMap, "availableSlots.handlebars");
+
+            }, new HandlebarsTemplateEngine());
 
             post("/registration", (req, res) -> {
 
                 // get form data values
-                String firstName = req.queryParams("first_Name");
-                String Lastname = req.queryParams("Last_Name");
+                String firstName = req.queryParams("FirstName");
+                String lastName = req.queryParams("LastName");
+                String identityNumber = req.queryParams("ID");
+                String cellphoneNumber =req.queryParams("CellPhone");
+                String address =req.queryParams("address");
                 String email = req.queryParams("email");
+
                 Map<String, String> dataMap = new HashMap<>();
 
                 if (firstName == null) {
-                    dataMap.put("error", "There is no Name entered!");
-                } else if  (Lastname == null) {
-                    dataMap.put("error", "There is no Name entered!");
-                } else if (email == null){
-                    dataMap.put("error", "There is no email entered!");
-             }
-//                else {
-//                    String greeting = greeter.greet(name, language);
-//                    // put the values from the form for Handlebars to use
-//                    dataMap.put("counter", greeter.getCount().toString());
-//                    dataMap.put("greeting", greeting);
-//                }
-
-
-
-
-                //
-                return new ModelAndView(dataMap, "registration.hbs");
+                    dataMap.put("error", "There is no Name entered!!");
+                } else if(lastName == null) {
+                    dataMap.put("error","There is no Name entered!");
+                } else if (identityNumber == null){
+                    dataMap.put("error","There is no ID entered!");
+                } else if(cellphoneNumber == null){
+                    dataMap.put("error","There is no Cellphone Number entered!");
+                }else if(address == null){
+                    dataMap.put("error","There is no Address entered!");
+                }else if (email == null){
+                    dataMap.put("error","There is no Email Address entered!");
+                }else {
+                    dataMap.put("error","There is Nothing entered!");
+                }
+                return new ModelAndView(dataMap, "registration.handlebars");
 
             }, new HandlebarsTemplateEngine());
-
-//            get("/greeted", (req, res) -> {
-//                Map<String, Object> dataMap = new HashMap<>();
-//                dataMap.put("greeted_people", greeter.greetedPeople());
-//                return new ModelAndView(dataMap, "greeted.hbs");
-//            }, new HandlebarsTemplateEngine());
-
-//            get("/api/greeted", api.greetedUsers(), new JsonTransformer());
-//            post("/api/greet", api.greetUser(), new JsonTransformer());
 
 
         } catch (Exception e) {

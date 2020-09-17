@@ -6,7 +6,16 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
 </head>
+
+<!--// rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">-->
+
+<!--&lt;!&ndash; JS, Popper.js, and jQuery &ndash;&gt;-->
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>-->
 <body>
 
 <div class="container">
@@ -15,42 +24,57 @@
           <h2>Make Booking</h2>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-            Licence Type
-        </div>
-        <form>
+    <div class="col-3">
+         <h4> Licence Type</h4>
+
+        <form class="col-3">
             <div class="form-group">
-                <input class="form-check-input" type="radio" name="Learners Licence" id="Radios1" value="Leaners" Learnes Licence>
-                <label class="form-check-label for=" Radios1" >
-                Learners Licence
+                <input class="form-check-input" type="radio" name="Licencetype" id="Radios1" value="Leaners" Learnes Licence>
+                <label class="form-check-label" for=" Radios1" >
+               <h6>Learners Licence</h6>
                 </label>
-                <input class="form-check-input" type="radio" name="Drivers Licence" id="Radios2" value="Drivers" Drivers Licence>
-                <label class="form-check-label for="Radios2" >
+                <input class="form-check-input" type="radio" name="Licencetype" id="Radios2" value="Drivers" Drivers Licence>
+                <label class="form-check-label" for="Radios2" >
                 Drivers Licence
                 </label>
             </div>
         </form>
-        <div class="row">
+        <br>
+        <form class="row">
+            <div class="col-12">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Licence type
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <button class="dropdown-item" type="button" >Code A1</button>
+                        <button class="dropdown-item" type="button">Code B</button>
+                        <button class="dropdown-item" type="button">Code C1</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+<br>
+<form class="row">
+        <div class="col-12">
             <div class="dropdown">
-                <div class="dropdown-menu" aria-labelledby="Codes">
-                    <a class="dropdown-item active" href="#">Code A1</a>
-                    <a class="dropdown-item active" href="#">Code B</a>
-                    <a class="dropdown-item active" href="#">Code C1</a>
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Traffic Departments
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item" type="button">Ashton Traffic department</button>
+                    <button class="dropdown-item" type="button">Atlantis Traffic department</button>
+                    <button class="dropdown-item" type="button">Beaufort West Municipal Traffic department</button>
+                    <button class="dropdown-item" type="button">Bellrail(Bellville) Traffic department</button>
+                    <button class="dropdown-item" type="button">Brackenfell Traffic department</button>
+                    <button class="dropdown-item" type="button">Bitou Municipal Traffic department</button>
+                    <button class="dropdown-item" type="button">Cape Agulhas Municipal Traffic department</button>
+                    <button class="dropdown-item" type="button">Drakenstein Municipal Traffic department</button>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="dropdown" aria-labelledby="Location">
-                <a class="dropdown-item active" href="#">Ashton Traffic department</a>
-                <a class="dropdown-item active" href="#">Atlantis Traffic department</a>
-                <a class="dropdown-item active" href="#">Beaufort West Municipal Traffic department</a>
-                <a class="dropdown-item active" href="#">Bellrail(Bellville) Traffic department</a>
-                <a class="dropdown-item active" href="#">Brackenfell Traffic department</a>
-                <a class="dropdown-item active" href="#">Bitou Municipal Traffic department</a>
-                <a class="dropdown-item active" href="#">Cape Agulhas Municipal Traffic department</a>
-                <a class="dropdown-item active" href="#">Drakenstein Municipal Traffic department</a>
-            </div>
+</form>
             <br>
             <div class="btn-group">
                 <button type="button" class="btn btn-secondary">Search</button>
@@ -58,4 +82,8 @@
 
         </div>
 </div>
+<!-- JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script><link
 </body>
