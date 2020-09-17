@@ -55,7 +55,12 @@ public class trafficDepartment {
           staticFiles.location("/public"); // Static files
 
             port(getHerokuAssignedPort());
+        get("/", (request, response) -> {
 
+            response.redirect("/booking");
+
+            return "";
+        });
             get("/booking", (req, res) -> {
 
                Map<String, String> dataMap = new HashMap<>();
