@@ -1,3 +1,4 @@
+import org.jdbi.v3.core.Jdbi;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
@@ -23,10 +24,11 @@ public class trafficDepartment {
     }
 
 
-    static Connection getDatabaseConnection(String defualtJdbcUrl) throws URISyntaxException, SQLException {
+    static Jdbi getDatabaseConnection(String defualtJdbcUrl) throws URISyntaxException, SQLException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         String database_url = processBuilder.environment().get("DATABASE_URL");
-        if (database_url != null) {
+        String local = processBuilder.environment().get("LOCAL");
+        if (local == null && database_url != null) {
 
             URI uri = new URI(database_url);
             String[] hostParts = uri.getUserInfo().split(":");
@@ -39,20 +41,23 @@ public class trafficDepartment {
             String path = uri.getPath();
             String url = String.format("jdbc:postgresql://%s:%s%s", host, port, path);
 
-            return DriverManager.getConnection(url, username, password);
+            return Jdbi.create(url, username, password);
 
+        } else if (local != null && database_url != null) {
+            return Jdbi.create(database_url);
         }
 
-        return DriverManager.getConnection(defualtJdbcUrl);
+        return Jdbi.create(defualtJdbcUrl);
 
     }
 
     public static void main(String[] args) {
 
         try {
-            // Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter");
-//            Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter?user=khanyiso&password=cairo123");
 
+           // Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter");
+            Jdbi jdbi = getDatabaseConnection("jdbc:postgresql://localhost/trafficDepartment?user=khanyiso&password=cairo123");
+            
             staticFiles.location("/public"); // Static files
 
             port(getHerokuAssignedPort());
@@ -84,6 +89,16 @@ public class trafficDepartment {
             }, new HandlebarsTemplateEngine());
 
 
+            post("/book", (req, res) -> {
+                String bookingId = req.queryParams("bookingId");
+
+                jdbi.useHandle(h -> {
+                    h.execute("update booking set booked = true where id = ?", Integer.parseInt(bookingId));
+                });
+
+                return "Thanks for booking";
+            });
+
             post("/booking", (req, res) -> {
 
                 // get form data values
@@ -95,24 +110,24 @@ public class trafficDepartment {
                 System.out.println(location);
                 System.out.println(codeType);
 
-                //     String codeA1 = req.queryParams("Code");
-//                String codeB = req.queryParams("CodeB");
-//                String codeC1 = req.queryParams("CodeC1");
-//                String location =req.queryParams("Location");
-                Map<String, String> dataMap = new HashMap<>();
+                List<Booking> bookings = jdbi.withHandle( h -> {
+                    List<Booking> bookingList = h.createQuery(
+                            "select * from booking where booked = false and department = ? " +
+                                    "and license_code = ? and license_type = ?")
+                            .bind(0, location)
+                            .bind(1, codeType)
+                            .bind(2, licenceType)
+                            .mapToBean(Booking.class)
+                            .list();
 
-                if (licenceType == null) {
-                    dataMap.put("error", "Please select a type!");
-                } else if (location == null) {
-                    dataMap.put("error", "please select a location!");
-                } else if (codeType == null) {
-                    dataMap.put("error", "Please select a Code type!");
-                } else if (location == null) {
-                    dataMap.put("error", "Please select a Location!");
-                } else {
-                    dataMap.put("error", "There is nothing selected!");
+                    return bookingList;
 
-                }
+                });
+
+                Map<String, Object> dataMap = new HashMap<>();
+
+                dataMap.put("bookings", bookings);
+
 
                 return new ModelAndView(dataMap, "booking.handlebars");
 
