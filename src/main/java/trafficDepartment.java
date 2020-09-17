@@ -50,7 +50,7 @@ public class trafficDepartment {
 
         try {
            // Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter");
-            Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/greeter?user=khanyiso&password=cairo123");
+            Connection connection = getDatabaseConnection("jdbc:postgresql://localhost/trafficDepartment?user=khanyiso&password=cairo123");
 
           staticFiles.location("/public"); // Static files
 
