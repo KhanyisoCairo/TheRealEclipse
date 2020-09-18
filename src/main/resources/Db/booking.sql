@@ -23,6 +23,12 @@ insert into booking (department, license_code, slot, booked, license_type)
 insert into booking (department, license_code, slot, booked, license_type)
     values ('greenpoint', 'c8','Tuesday 11h00 - 13h00', false, 'learners');
 
+    insert into booking (department, license_code, slot, booked, license_type)
+        values ('belville', 'c2','Tuesday 10h00 - 12h00', false, 'learners');
+
+        insert into booking (department, license_code, slot, booked, license_type)
+            values ('stockroad', 'c2','Tuesday 13h00 - 14h00', false, 'learners');
+
 --insert into booking (department, license_type, booked)
 --    values ("bellville", "c2","Friday 10h00 - 14h00", false);
 
