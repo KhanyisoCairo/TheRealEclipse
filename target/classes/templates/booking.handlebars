@@ -74,6 +74,8 @@
 
         <div>
 
+
+
             {{#if bookings }}
 
                 <h3>Slots available</h3>
@@ -98,17 +100,19 @@
                             </td>
                         </tr>
                     {{else}}
+                        {{#if canShow}}
+                            <tr>
+                                <td colspan="4">
+                                    No slots available
+                                </td>
+                            </tr>
 
+                        {{/if}}
                     {{/each}}
                 </table>
             {{else}}
-                <tr>
-                    <td colspan="4">
-                        No slots available
-                    </td>
-                </tr>
-            {{/if}}
 
+            {{/if}}
 
 
 

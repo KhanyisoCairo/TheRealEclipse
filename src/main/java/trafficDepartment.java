@@ -154,7 +154,13 @@ public class trafficDepartment {
                 Map<String, Object> dataMap = new HashMap<>();
 
                 dataMap.put("bookings", bookings);
+                System.out.println(bookings.size() + " ------");
+                if (bookings.size()<1){
+                    dataMap.put("canShow", new Object());
+                    dataMap.put("bookings", new Object());
+                }
 
+                System.out.println(dataMap.containsKey("canShow"));
 
                 return new ModelAndView(dataMap, "booking.handlebars");
 
